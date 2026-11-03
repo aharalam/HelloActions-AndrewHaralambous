@@ -1,0 +1,45 @@
+# The name displayed in the repository's Actions tab.
+name: Hello World with Python
+
+# Events that start this workflow.
+on:
+  # Start automatically when a commit is pushed to main.
+  push:
+    branches:
+      - main
+  # Also allow a user to select Run workflow in the Actions tab.
+  workflow_dispatch:
+
+# Checking out source code requires only read access.
+permissions:
+  contents: read
+
+jobs:
+  hello-python:
+    name: Run the Python Hello World program
+    # Execute this job on a GitHub-hosted Ubuntu runner.
+    runs-on: ubuntu-latest
+
+    # Steps in this job execute in the order listed.
+    steps:
+      # Copy the repository files into the runner's workspace.
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      # Select Python explicitly instead of relying on the runner's default.
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      # Optional challenge: verify the supplied-name and default-name cases.
+      - name: Test the greeting program
+        run: python -B -m unittest discover -v
+
+      # Python needs no separate compilation command or external packages.
+      - name: Run the Python program
+        env:
+          # hello.py reads this variable to choose whom to greet.
+          WHO_TO_GREET: 'GitHub Actions Student'
+        # Both printed lines appear in this step's log.
+        run: python hello.py
